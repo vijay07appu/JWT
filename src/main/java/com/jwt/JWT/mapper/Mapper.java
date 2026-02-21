@@ -1,32 +1,36 @@
 package com.jwt.JWT.mapper;
 
-import com.jwt.JWT.dto.UserDTO;
+
+import com.jwt.JWT.dto.UserRequestDTO;
+import com.jwt.JWT.dto.UserResponseDTO;
 import com.jwt.JWT.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Mapper {
 
-    private UserDTO toDTO (User user)
+    public UserResponseDTO toResponseDTO (User user)
     {
         if(user==null)
         {
             return null;
         }
-       return UserDTO.builder()
+       return UserResponseDTO.builder()
+               .id(user.getId())
                 .userName(user.getUserName())
                .email(user.getEmail())
                .build();
     }
 
-    private User toEntity(UserDTO userDTO){
-        if(userDTO==null)
+    public User toEntity(UserRequestDTO userRequestDTO){
+        if(userRequestDTO==null)
         {
             return null;
         }
         return User.builder()
-                .userName(userDTO.getUserName())
-                .email(userDTO.getEmail())
+                .userName(userRequestDTO.getUserName())
+                .email(userRequestDTO.getEmail())
+                .password(userRequestDTO.getPassword())
                 .build();
     }
 }
