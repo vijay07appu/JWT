@@ -10,6 +10,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,14 +22,18 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     Mapper mapper;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Override
     public UserResponseDTO register(UserRequestDTO userRequestDTO){
 
 
         try{
-
+            // taking password and encoding it
+            userRequestDTO.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
             User userEntity=mapper.toEntity(userRequestDTO);
-          User  savedUserEntity=userRepository.save(userEntity);
+            User  savedUserEntity=userRepository.save(userEntity);
            return mapper.toResponseDTO(savedUserEntity);
 
 
