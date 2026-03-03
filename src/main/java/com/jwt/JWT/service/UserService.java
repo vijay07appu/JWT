@@ -11,4 +11,5 @@ import org.springframework.stereotype.Service;
 public interface UserService {
 
    public UserResponseDTO register(UserRequestDTO userRequestDTO);
+   public UserResponseDTO login(UserRequestDTO userRequestDTO);
 }

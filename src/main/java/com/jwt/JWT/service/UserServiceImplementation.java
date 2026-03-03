@@ -1,6 +1,7 @@
 package com.jwt.JWT.service;
 
 import com.jwt.JWT.Exception.DuplicateResourceException;
+import com.jwt.JWT.Exception.InvalidCredentialsException;
 import com.jwt.JWT.dto.UserRequestDTO;
 import com.jwt.JWT.dto.UserResponseDTO;
 import com.jwt.JWT.entity.User;
@@ -56,6 +57,28 @@ public class UserServiceImplementation implements UserService {
 
         }
         throw new DuplicateResourceException("Duplicate value found");
+
+    }
+
+    @Override
+    public UserResponseDTO login(UserRequestDTO userRequestDTO)
+    {
+
+
+            User userDb=userRepository.findUserByUserName(userRequestDTO.getUserName());
+            if(userDb==null)
+            {
+                throw new InvalidCredentialsException("Invalid user name ");
+
+            }
+            boolean isPasswordValid=passwordEncoder.matches(userRequestDTO.getPassword(),userDb.getPassword());
+            if(!isPasswordValid){
+                throw new InvalidCredentialsException("Invalid password ");
+            }
+            return mapper.toResponseDTO(userDb);
+
+
+
 
     }
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.servlet.View;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -19,6 +20,8 @@ public class GlobalExceptionHandler {
 
     @Autowired
     ErrorResponse errorResponse;
+    @Autowired
+    private View error;
 
     // @valid errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -52,6 +55,19 @@ public class GlobalExceptionHandler {
 
     }
 
+
+    // invalid Credentials exception
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleInvalidCredentials(InvalidCredentialsException ex)
+    {
+        errorResponse.setLocalDateTime(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorResponse.setError("Authentication failed");
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setErrors(null);
+        return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
+    }
+
     // generic errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> genericHandler(Exception ex) {
@@ -64,6 +80,8 @@ public class GlobalExceptionHandler {
 
 
     }
+
+
 
 
 }
