@@ -1,6 +1,8 @@
 package com.jwt.JWT.config;
 
 
+import com.jwt.JWT.Exception.CustomAccessDeniedHandler;
+import com.jwt.JWT.Exception.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,12 @@ public class SecurityConfig {
     @Autowired
     UserDetailsService userDetailsService;
 
+    @Autowired
+    CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
@@ -33,6 +41,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 
                 )
+                    .exceptionHandling(ex -> ex
+                            .authenticationEntryPoint(customAuthenticationEntryPoint)
+                            .accessDeniedHandler(customAccessDeniedHandler)
+                    )
                 .httpBasic(Customizer.withDefaults())
                     .build();
 
